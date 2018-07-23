@@ -1,0 +1,22 @@
+apiVersion: {{ template "prometheus-operator.apiVersion" . }}
+kind: ServiceMonitor
+metadata:
+  name: exporter-calico
+  namespace: observability
+  labels:
+    app: exporter-calico
+    component: calico-node
+    chart: {{ template "kubernetes.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  jobLabel: component
+  selector:
+    matchLabels:
+      component: calico-node
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+  - port: metrics
+    interval: 15s
